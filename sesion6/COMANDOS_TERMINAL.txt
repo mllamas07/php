@@ -1,0 +1,99 @@
+*************************************SENTENCIAS DE TERMINAL*******************************************
+
+Una vez logados como root.
+•	Mysql> CREATE DATABASE GeoIP;
+•	Mysql> SHOW ENGINES; /*muetra la lista de motores siendo por defecto InnoDB ya que se instaló MySQL 
+				en Windows con asistente de lo contrario sería MyISAM,. Por lo tanto lo dejamos 
+				así ya que para las consultas transaccionales utilizaremos el motor InnoDB.*/
+•	Mysql>SHOW DATABASES;
+•	Mysql>USE GeoIP;
+
+***********************************TABLA CITIES_LOCATIONS************************************
+•	Mysql> CREATE TABLE cities_locations
+	(geoname_id integer,
+	locale_code char(2),
+	continent_code char(2),
+	continent_name char(64),
+	country_iso_code char(2),
+	country_name char(64),
+	subdivision_1_iso_code char(64),
+	subdivision_1_name char(64),
+	subdivision_2_iso_code char(64),
+	subdivision_2_name char(64),
+	city_name varchar(128),
+	metro_code char(64),
+	time_zone char(64))
+	ENGINE = InnoDB;
+
+/*importamos el csv*/
+•	mysql> LOAD DATA INFILE 'GeoLite2-City-Locations-es.csv'
+		INTO TABLE cities_locations
+		FIELDS TERMINATED BY ','
+		ENCLOSED BY '"'
+		LINES TERMINATED BY '\n'
+		IGNORE 1 ROWS;
+No ejecuta dando un error, por lo tanto la variable secure_file_priv he de modificarla en el archivo.
+
+•	Mysql> SHOW VARIABLES LIKE “secure_file_priv”;/* para indicar dónde está la ruta. 
+	Después de modificarla, reiniciamos el servicio y volvemos a ejecutar LOAD DATA INFILE, 
+	dando resultado OK.*/
+
+
+*********************************TABLA CITIES_BLOCKS_IP4*********************
+
+•	Mysql> CREATE TABLE cities_blocks_ip4
+	(network char(64),
+	geoname_id char(64),
+	registered_country_geoname_id char(64),
+	represented_country_geoname_id char(64),
+	is_anonymous_proxy char(64),
+	is_satellite_provider char(64),
+	postal_code char(64),
+	latitude char(64),
+	longitude char(64),
+	accuracy_radius char(64))
+	ENGINE = InnoDB;
+
+/*importamos el csv*/
+	LOAD DATA INFILE 'GeoLite2-City-Blocks-IPv4.csv'
+	INTO TABLE cities_blocks_ip4
+	FIELDS TERMINATED BY ','
+	ENCLOSED BY '"'
+	LINES TERMINATED BY '\n';
+
+**************************************TABLA COUNTRIES_LOCATIONS*************************************
+
+•	Mysql> CREATE TABLE countries_locations
+(geoname_id varchar(64),
+locale_code varchar(64),
+continent_code varchar(64),
+continent_name varchar(64),
+country_iso_code varchar(64),
+country_name varchar(64))
+ENGINE = InnoDB;
+
+/*importamos el csv*/
+LOAD DATA INFILE 'GeoLite2-Country-Locations-es.csv'
+INTO TABLE countries_locations
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+*************************************TABLA COUNTRIES_BLOCKS_IP4****************************
+
+TABLA COUNTRIES_BLOCKS_IP4
+•	Mysql> CREATE TABLE countries_blocks_ip4
+(network varchar(64),
+geoname_id varchar(64),
+registered_country_geoname_id varchar(64),
+represented_country_geoname_id varchar(64),
+is_anonymous_proxy varchar(64),
+is_satellite_provider varchar(64))
+ENGINE = InnoDB;
+
+/*importamos el csv*/
+LOAD DATA INFILE 'GeoLite2-Country-Blocks-IPv4.csv'
+INTO TABLE countries_blocks_ip4
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
